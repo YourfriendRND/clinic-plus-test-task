@@ -12,6 +12,10 @@
     "infra:up": "docker compose -f docker-compose.infra.yml up -d",
     "infra:down": "docker compose -f docker-compose.infra.yml down",
     "infra:ps": "docker compose -f docker-compose.infra.yml ps",
+    "migration:generate": "npm run migration:generate -w api --",
+    "migration:run": "npm run migration:run -w api",
+    "migration:revert": "npm run migration:revert -w api",
+    "migration:show": "npm run migration:show -w api",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"
   },

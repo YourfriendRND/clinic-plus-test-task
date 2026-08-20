@@ -1,0 +1,32 @@
+.text-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.text-field__label {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.text-field__control {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.text-field__control:focus {
+  border-color: var(--accent);
+}
+
+.text-field__control::placeholder {
+  color: var(--muted);
+}

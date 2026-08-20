@@ -1,7 +1,4 @@
-export type HealthStatus = {
-  status: 'ok';
-  database: 'up';
-};
+import type { HealthStatus } from './health-status';
 
 export interface IHealthService {
   getStatus(): Promise<HealthStatus>;

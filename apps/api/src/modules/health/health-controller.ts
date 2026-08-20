@@ -2,7 +2,7 @@ import { inject } from 'inversify';
 import { controller, httpGet } from 'inversify-express-utils';
 import { ApplicationComponents } from '../../core/di/application-components';
 import { AbstractController } from '../../core/http/AbstractController';
-import type { IHealthService } from './IHealthService';
+import { IHealthService } from '../../types/common/health-service.interface';
 
 @controller('/health')
 export class HealthController extends AbstractController {
@@ -18,6 +18,7 @@ export class HealthController extends AbstractController {
    *   get:
    *     tags: [Health]
    *     summary: Проверка API и соединения с PostgreSQL
+   *     description: Возвращает статус процесса API и проверяет, что PostgreSQL отвечает на SELECT 1.
    *     responses:
    *       200:
    *         description: API жив, Postgres отвечает

@@ -1,12 +1,16 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { getMe, type SessionUser } from '../lib/auth-api';
+import './home-page.css';
 
 type LoadState = 'loading' | 'ok' | 'error';
 
 export default function Home() {
   const [state, setState] = useState<LoadState>('loading');
   const [detail, setDetail] = useState('');
+  const [session, setSession] = useState<SessionUser | null>(null);
 
   useEffect(() => {
     fetch('/api/health')
@@ -22,19 +26,35 @@ export default function Home() {
         setDetail(error instanceof Error ? error.message : 'unknown error');
         setState('error');
       });
+
+    getMe()
+      .then(setSession)
+      .catch(() => {
+        setSession(null);
+      });
   }, []);
 
   return (
-    <main className="flex flex-1 flex-col items-start gap-4 p-8">
-      <h1 className="text-2xl font-semibold">Клиника Плюс</h1>
-      <p>Проверка связи со скелетом API через rewrite /api/health.</p>
-      {state === 'loading' ? <p>Запрос к API…</p> : null}
-      {state === 'ok' ? <p>API: {detail}</p> : null}
+    <main className="home-page">
+      <h1 className="home-page__title">Клиника Плюс</h1>
+      <p className="home-page__text">Проверка связи со скелетом API через rewrite /api/health.</p>
+      {state === 'loading' ? <p className="home-page__text">Запрос к API…</p> : null}
+      {state === 'ok' ? <p className="home-page__text">API: {detail}</p> : null}
       {state === 'error' ? (
-        <p>
+        <p className="home-page__text">
           API недоступен. Запустите `npm run dev` из корня репозитория. {detail}
         </p>
       ) : null}
+      {session ? (
+        <p className="home-page__text">
+          Сессия: {session.fullName} ({session.roleCode})
+        </p>
+      ) : (
+        <p className="home-page__text">Сессия: нет. Войдите через страницу входа.</p>
+      )}
+      <Link className="home-page__link" href="/login">
+        Вход
+      </Link>
     </main>
   );
 }

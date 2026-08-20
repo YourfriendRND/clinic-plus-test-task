@@ -3,6 +3,10 @@ import type { Express } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
+function posixGlob(...segments: string[]): string {
+  return path.join(__dirname, ...segments).replaceAll('\\', '/');
+}
+
 export function setupSwagger(app: Express): void {
   const spec = swaggerJsdoc({
     definition: {
@@ -10,8 +14,12 @@ export function setupSwagger(app: Express): void {
       info: {
         title: 'Clinic Plus API',
         version: '0.0.1',
+        description: 'API системы нарядов. Сессия - cookie connect.sid, 2FA-код в dev смотрите в логе API.',
       },
-      tags: [{ name: 'Health' }],
+      tags: [
+        { name: 'Health', description: 'Проверка активности API и PostgreSQL' },
+        { name: 'Auth', description: 'Вход, 2FA, сессия и выход' },
+      ],
       components: {
         securitySchemes: {
           cookieAuth: {
@@ -22,11 +30,17 @@ export function setupSwagger(app: Express): void {
         },
       },
     },
-    apis: [
-      path.join(__dirname, '../../modules/**/*.ts'),
-      path.join(__dirname, '../../modules/**/*.js'),
-    ],
+    apis: [posixGlob('../../modules/**/*.ts'), posixGlob('../../modules/**/*.js')],
   });
 
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(spec));
+  app.use(
+    '/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(spec, {
+      swaggerOptions: {
+        persistAuthorization: true,
+        withCredentials: true,
+      },
+    }),
+  );
 }

@@ -18,3 +18,15 @@ export function getPostgresConfig() {
 export function getApiPort(): number {
   return Number(process.env.API_PORT ?? 3001);
 }
+
+export function getRedisUrl(): string {
+  return process.env.REDIS_URL ?? 'redis://localhost:6379';
+}
+
+export function getSessionSecret(): string {
+  return process.env.SESSION_SECRET ?? 'dev-session-secret';
+}
+
+export function isProduction(): boolean {
+  return process.env.NODE_ENV === 'production';
+}
