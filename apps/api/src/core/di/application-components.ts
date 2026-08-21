@@ -6,4 +6,7 @@ export const ApplicationComponents = {
   UserRepository: Symbol.for('UserRepository'),
   AuthService: Symbol.for('AuthService'),
   AuthController: Symbol.for('AuthController'),
+  OrderRepository: Symbol.for('OrderRepository'),
+  OrderService: Symbol.for('OrderService'),
+  OrdersController: Symbol.for('OrdersController'),
 };

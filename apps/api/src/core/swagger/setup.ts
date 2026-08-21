@@ -19,6 +19,7 @@ export function setupSwagger(app: Express): void {
       tags: [
         { name: 'Health', description: 'Проверка активности API и PostgreSQL' },
         { name: 'Auth', description: 'Вход, 2FA, сессия и выход' },
+        { name: 'Orders', description: 'CRUD нарядов. GET отдаёт все наряды; бригада на UI делит на «Мои» и «Все».' },
       ],
       components: {
         securitySchemes: {

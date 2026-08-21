@@ -1,12 +1,7 @@
 import { apiRequest } from './api';
+import type { SessionUser } from './session-user';
 
-export type SessionUser = {
-  id: string;
-  fullName: string;
-  roleCode: 'operator' | 'team';
-};
-
-export type LoginResult = {
+type LoginResult = {
   verificationId: string;
 };
 
@@ -26,4 +21,8 @@ export function verify(verificationId: string, code: string): Promise<SessionUse
 
 export function getMe(): Promise<SessionUser> {
   return apiRequest<SessionUser>('/auth/me');
+}
+
+export function logout(): Promise<void> {
+  return apiRequest<void>('/auth/logout', { method: 'POST' });
 }

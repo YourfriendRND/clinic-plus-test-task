@@ -51,7 +51,7 @@ export function CredentialsForm({
         />
       </div>
       {error ? <p className="credentials-form__error">{error}</p> : null}
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" className="button--block" disabled={pending}>
         Войти
       </Button>
     </form>

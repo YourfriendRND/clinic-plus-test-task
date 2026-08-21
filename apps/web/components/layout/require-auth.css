@@ -1,0 +1,19 @@
+.require-auth,
+.cabinet {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.require-auth {
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--muted);
+}
+
+.cabinet__body {
+  flex: 1;
+  padding: 32px 40px;
+}

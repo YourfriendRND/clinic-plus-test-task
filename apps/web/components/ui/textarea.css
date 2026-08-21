@@ -1,0 +1,29 @@
+.textarea {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.textarea__label {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.textarea__control {
+  min-height: 80px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+  resize: vertical;
+}
+
+.textarea__control:focus {
+  border-color: var(--accent);
+}
