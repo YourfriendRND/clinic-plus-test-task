@@ -1,0 +1,25 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.badge--new {
+  background: #ececec;
+  color: #6b6b6b;
+}
+
+.badge--in-progress {
+  background: #e4f0ee;
+  color: #2f6f6a;
+}
+
+.badge--done {
+  background: #e7f2ea;
+  color: #3d7a4a;
+}

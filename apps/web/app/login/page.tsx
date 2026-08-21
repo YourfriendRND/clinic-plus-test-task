@@ -1,18 +1,24 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CredentialsForm } from '../../components/auth/credentials-form';
 import { VerifyForm } from '../../components/auth/verify-form';
+import { useSession } from '../../hooks/use-session';
 import { ApiError } from '../../lib/api-error';
-import { getMe, login, verify } from '../../lib/auth-api';
+import { login, verify } from '../../lib/auth-api';
 import { formatPhoneInput, phoneToApi } from '../../lib/phone';
+import { queryKeys } from '../../lib/query-keys';
+import { homePath } from '../../lib/role';
 import './login-page.css';
 
 type Step = 'credentials' | 'code';
 
 export default function LoginPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const session = useSession();
   const [step, setStep] = useState<Step>('credentials');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -22,12 +28,10 @@ export default function LoginPage() {
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
-    getMe()
-      .then(() => {
-        router.replace('/');
-      })
-      .catch(() => undefined);
-  }, [router]);
+    if (session.data) {
+      router.replace(homePath(session.data.roleCode));
+    }
+  }, [router, session.data]);
 
   async function handleLogin() {
     setError('');
@@ -52,8 +56,9 @@ export default function LoginPage() {
     setPending(true);
 
     try {
-      await verify(verificationId, code.trim());
-      router.replace('/');
+      const user = await verify(verificationId, code.trim());
+      queryClient.setQueryData(queryKeys.me, user);
+      router.replace(homePath(user.roleCode));
     } catch (caught) {
       setError(
         caught instanceof ApiError ? caught.message : 'Неверный или истёкший код',

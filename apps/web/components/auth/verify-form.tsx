@@ -45,7 +45,7 @@ export function VerifyForm({
       />
       {error ? <p className="verify-form__error">{error}</p> : null}
       <div className="verify-form__actions">
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" className="button--block" disabled={pending}>
           Подтвердить
         </Button>
         <Button variant="ghost" disabled={pending} onClick={onBack}>

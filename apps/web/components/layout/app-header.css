@@ -1,0 +1,73 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 40px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header__left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.app-header__logo {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.app-header__nav {
+  display: flex;
+  gap: 24px;
+}
+
+.app-header__link {
+  color: var(--foreground);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.app-header__link--active {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+.app-header__user {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.app-header__name {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.app-header__role {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.app-header__logout {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.app-header__logout:hover {
+  text-decoration: underline;
+}

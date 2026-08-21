@@ -1,0 +1,33 @@
+.select-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.select-field__label {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.select-field__control {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.select-field__control:focus {
+  border-color: var(--accent);
+}
+
+.select-field__control:disabled {
+  color: var(--muted);
+  background: #f3f3f1;
+}

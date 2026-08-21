@@ -12,19 +12,29 @@
   cursor: not-allowed;
 }
 
-.button--primary {
-  width: 100%;
+.button--primary,
+.button--secondary {
   height: 40px;
+  padding: 0 16px;
   border-radius: var(--radius);
-  background: var(--accent);
-  color: #fff;
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
 }
 
+.button--primary {
+  background: var(--accent);
+  color: #fff;
+}
+
 .button--primary:hover:not(:disabled) {
   background: var(--accent-hover);
+}
+
+.button--secondary {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
 }
 
 .button--ghost {
@@ -37,4 +47,8 @@
 
 .button--ghost:hover:not(:disabled) {
   text-decoration: underline;
+}
+
+.button--block {
+  width: 100%;
 }

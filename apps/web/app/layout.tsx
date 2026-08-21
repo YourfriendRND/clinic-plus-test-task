@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { QueryProvider } from '../components/query-provider';
 import './globals.css';
 
 const inter = Inter({
@@ -15,7 +16,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ru" className={`${inter.variable} page`}>
-      <body className="page__body">{children}</body>
+      <body className="page__body">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
