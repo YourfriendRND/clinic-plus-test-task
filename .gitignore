@@ -1,6 +1,7 @@
 # Local planning (not for reviewers)
 plan.md
 figma-prompt.md
+screenshot/
 
 # Dependencies
 node_modules/

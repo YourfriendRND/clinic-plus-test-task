@@ -1,10 +1,6 @@
 import { BaseHttpController } from 'inversify-express-utils';
-
-export type SessionUser = {
-  uuid: string;
-  fullName: string;
-  roleCode: 'operator' | 'team';
-};
+import { HttpError } from '../errors/http-error';
+import type { SessionUser } from '../../types/session/session-user';
 
 export abstract class AbstractController extends BaseHttpController {
   protected createdJson<T>(data: T) {
@@ -19,11 +15,15 @@ export abstract class AbstractController extends BaseHttpController {
     return this.json({ error: message }, status);
   }
 
-  protected get currentUser(): SessionUser | null {
-    const request = this.httpContext.request as typeof this.httpContext.request & {
-      user?: SessionUser;
-    };
+  protected fromHttpError(error: unknown) {
+    if (error instanceof HttpError) {
+      return this.fail(error.message, error.code);
+    }
 
-    return request.user ?? null;
+    throw error;
+  }
+
+  protected get currentUser(): SessionUser | null {
+    return this.httpContext.request.session.user ?? null;
   }
 }

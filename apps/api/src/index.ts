@@ -1,5 +1,8 @@
 import 'reflect-metadata';
+import { DataSource } from 'typeorm';
 import { loadEnv, getApiPort } from './core/config/env';
+import { seedDatabase } from './core/db/seed';
+import { ApplicationComponents } from './core/di/application-components';
 import { createContainer } from './core/di/container';
 import { createHttpServer } from './core/http/server';
 
@@ -8,6 +11,7 @@ async function main(): Promise<void> {
 
   const port = getApiPort();
   const container = await createContainer();
+  await seedDatabase(container.get<DataSource>(ApplicationComponents.DataSource));
   const app = createHttpServer(container);
 
   app.listen(port, () => {

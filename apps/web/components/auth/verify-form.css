@@ -1,0 +1,39 @@
+.verify-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.verify-form__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.verify-form__title {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.verify-form__hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.verify-form__error {
+  margin: 0;
+  color: var(--error);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.verify-form__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
