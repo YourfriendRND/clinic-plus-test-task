@@ -4,9 +4,12 @@ export const ApplicationComponents = {
   HealthService: Symbol.for('HealthService'),
   HealthController: Symbol.for('HealthController'),
   UserRepository: Symbol.for('UserRepository'),
+  UserService: Symbol.for('UserService'),
   AuthService: Symbol.for('AuthService'),
   AuthController: Symbol.for('AuthController'),
   OrderRepository: Symbol.for('OrderRepository'),
   OrderService: Symbol.for('OrderService'),
-  OrdersController: Symbol.for('OrdersController'),
+  OrderController: Symbol.for('OrderController'),
+  TeamService: Symbol.for('TeamService'),
+  TeamController: Symbol.for('TeamController'),
 };

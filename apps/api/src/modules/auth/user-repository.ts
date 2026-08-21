@@ -2,6 +2,7 @@ import { inject, injectable } from 'inversify';
 import { DataSource, Repository } from 'typeorm';
 import { ApplicationComponents } from '../../core/di/application-components';
 import type { IUserRepository } from '../../types/user/user-repository.interface';
+import { RoleCode } from './role-code.enum';
 import { User } from './entities/user';
 
 @injectable()
@@ -18,5 +19,13 @@ export class UserRepository implements IUserRepository {
 
   public findById(id: string): Promise<User | null> {
     return this.users.findOne({ where: { id }, relations: { role: true } });
+  }
+
+  public findByRoleCode(code: RoleCode): Promise<User[]> {
+    return this.users.find({
+      where: { role: { code } },
+      relations: { role: true },
+      order: { fullName: 'ASC' },
+    });
   }
 }

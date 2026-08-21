@@ -1,6 +1,6 @@
-import type { OrderStatus } from '../../modules/orders/order-status.enum';
+import type { OrderStatus } from '../order-status.enum';
 
-export type OrderExecutorView = {
+type OrderExecutorView = {
   id: string;
   fullName: string;
 };

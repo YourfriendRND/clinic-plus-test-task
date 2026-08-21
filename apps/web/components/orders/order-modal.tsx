@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import type { Order } from '../../lib/order';
+import type { Team } from '../../lib/team';
 import { Button } from '../ui/button';
 import { Modal } from '../ui/modal';
 import { SelectField } from '../ui/select-field';
@@ -7,19 +8,38 @@ import { TextArea } from '../ui/textarea';
 import { TextField } from '../ui/text-field';
 import './order-modal.css';
 
+const UNASSIGNED = '';
+
+export type OrderFormValues = {
+  address: string;
+  executionDate: string;
+  description: string;
+  executorId: string;
+};
+
 type OrderModalProps = {
   open: boolean;
   order: Order | null;
+  teams: Team[];
   pending: boolean;
   error: string;
   onClose: () => void;
-  onSubmit: (values: { address: string; executionDate: string; description: string }) => void;
+  onSubmit: (values: OrderFormValues) => void;
 };
 
-export function OrderModal({ open, order, pending, error, onClose, onSubmit }: OrderModalProps) {
+export function OrderModal({
+  open,
+  order,
+  teams,
+  pending,
+  error,
+  onClose,
+  onSubmit,
+}: OrderModalProps) {
   const [address, setAddress] = useState('');
   const [executionDate, setExecutionDate] = useState('');
   const [description, setDescription] = useState('');
+  const [executorId, setExecutorId] = useState(UNASSIGNED);
 
   useEffect(() => {
     if (!open) {
@@ -29,11 +49,12 @@ export function OrderModal({ open, order, pending, error, onClose, onSubmit }: O
     setAddress(order?.address ?? '');
     setExecutionDate(order?.executionDate.slice(0, 10) ?? '');
     setDescription(order?.description ?? '');
+    setExecutorId(order?.executor?.id ?? UNASSIGNED);
   }, [open, order]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSubmit({ address, executionDate, description });
+    onSubmit({ address, executionDate, description, executorId });
   }
 
   return (
@@ -72,9 +93,16 @@ export function OrderModal({ open, order, pending, error, onClose, onSubmit }: O
           value={description}
           onChange={(event) => setDescription(event.target.value)}
         />
-        <SelectField label="Исполнитель" name="executor" disabled value="current">
-          <option value="current">{order?.executor?.fullName ?? 'Не назначен'}</option>
-        </SelectField>
+        <SelectField
+          label="Исполнитель"
+          name="executor"
+          value={executorId}
+          options={[
+            { value: UNASSIGNED, label: 'Не назначен' },
+            ...teams.map((team) => ({ value: team.id, label: team.fullName })),
+          ]}
+          onChange={setExecutorId}
+        />
         {error ? <p className="order-modal__error">{error}</p> : null}
       </form>
     </Modal>

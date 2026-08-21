@@ -45,6 +45,11 @@
   cursor: pointer;
 }
 
-.order-table__action:hover {
+.order-table__action:hover:not(:disabled) {
   text-decoration: underline;
+}
+
+.order-table__action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

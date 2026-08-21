@@ -1,5 +1,5 @@
-import type { LoginResult } from './auth';
-import type { SessionUser } from './session-user';
+import type { LoginResult } from '../../modules/auth/dto/login';
+import type { SessionUser } from '../../modules/auth/dto/session-user';
 
 export interface IAuthService {
   login(phone: string, password: string): Promise<LoginResult>;

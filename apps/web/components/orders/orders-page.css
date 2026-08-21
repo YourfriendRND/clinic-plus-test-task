@@ -55,3 +55,10 @@
   font-size: 14px;
   line-height: 20px;
 }
+
+.orders-page__error {
+  margin: 0;
+  color: var(--error);
+  font-size: 14px;
+  line-height: 20px;
+}

@@ -4,7 +4,7 @@ import type { IOrderRepository } from '../../types/order/order-repository.interf
 import type { IOrderService } from '../../types/order/order-service.interface';
 import { OrderRepository } from './order-repository';
 import { OrderService } from './order-service';
-import './orders-controller';
+import './order-controller';
 
 export function loadOrderModule(container: Container): void {
   container.bind<IOrderRepository>(ApplicationComponents.OrderRepository).to(OrderRepository).inSingletonScope();
