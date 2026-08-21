@@ -1,25 +1,29 @@
 'use client';
 
 import { useState } from 'react';
-import { OrderModal } from '../../../components/orders/order-modal';
+import { OrderModal, type OrderFormValues } from '../../../components/orders/order-modal';
 import { OrderTable } from '../../../components/orders/order-table';
 import { Button } from '../../../components/ui/button';
-import { useCreateOrder, useOrders, useUpdateOrder } from '../../../hooks/use-orders';
+import { useAssignOrder, useCreateOrder, useOrders, useUpdateOrder } from '../../../hooks/use-orders';
+import { useTeams } from '../../../hooks/use-teams';
 import { ApiError } from '../../../lib/api-error';
 import type { Order } from '../../../lib/order';
 import '../../../components/orders/orders-page.css';
 
 export default function OperatorOrdersPage() {
   const ordersQuery = useOrders();
+  const teamsQuery = useTeams();
   const createOrder = useCreateOrder();
   const updateOrder = useUpdateOrder();
+  const assignOrder = useAssignOrder();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Order | null>(null);
   const [error, setError] = useState('');
   const [updated, setUpdated] = useState(false);
 
-  const pending = createOrder.isPending || updateOrder.isPending;
+  const pending = createOrder.isPending || updateOrder.isPending || assignOrder.isPending;
   const orders = ordersQuery.data ?? [];
+  const teams = teamsQuery.data ?? [];
 
   function flashUpdated() {
     setUpdated(true);
@@ -47,14 +51,21 @@ export default function OperatorOrdersPage() {
     setError('');
   }
 
-  async function handleSubmit(values: { address: string; executionDate: string; description: string }) {
+  async function handleSubmit(values: OrderFormValues) {
     setError('');
+    const body = {
+      address: values.address,
+      executionDate: values.executionDate,
+      description: values.description,
+    };
 
     try {
-      if (editing) {
-        await updateOrder.mutateAsync({ id: editing.id, body: values });
-      } else {
-        await createOrder.mutateAsync(values);
+      const saved = editing
+        ? await updateOrder.mutateAsync({ id: editing.id, body })
+        : await createOrder.mutateAsync(body);
+
+      if (values.executorId && values.executorId !== saved.executor?.id) {
+        await assignOrder.mutateAsync({ id: saved.id, body: { executorId: values.executorId } });
       }
 
       setModalOpen(false);
@@ -82,11 +93,20 @@ export default function OperatorOrdersPage() {
             <Button onClick={openCreate}>Создать наряд</Button>
           </div>
         ) : null}
-        {ordersQuery.isSuccess && orders.length > 0 ? <OrderTable orders={orders} onEdit={openEdit} /> : null}
+        {ordersQuery.isSuccess && orders.length > 0 ? (
+          <OrderTable
+            orders={orders}
+            renderAction={(order) => ({
+              label: 'Изменить',
+              onClick: () => openEdit(order),
+            })}
+          />
+        ) : null}
       </div>
       <OrderModal
         open={modalOpen}
         order={editing}
+        teams={teams}
         pending={pending}
         error={error}
         onClose={closeModal}

@@ -3,7 +3,8 @@ import { controller, httpGet, httpPost } from 'inversify-express-utils';
 import { ApplicationComponents } from '../../core/di/application-components';
 import { AbstractController } from '../../core/http/AbstractController';
 import { IAuthService } from '../../types/session/auth-service.interface';
-import { LoginBody, VerifyBody } from '../../types/session/auth';
+import { LoginBody } from './dto/login';
+import { VerifyBody } from './dto/verify';
 
 @controller('/auth')
 export class AuthController extends AbstractController {

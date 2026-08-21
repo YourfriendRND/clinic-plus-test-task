@@ -1,6 +1,6 @@
 import { BaseHttpController } from 'inversify-express-utils';
 import { HttpError } from '../errors/http-error';
-import type { SessionUser } from '../../types/session/session-user';
+import type { SessionUser } from '../../modules/auth/dto/session-user';
 
 export abstract class AbstractController extends BaseHttpController {
   protected createdJson<T>(data: T) {

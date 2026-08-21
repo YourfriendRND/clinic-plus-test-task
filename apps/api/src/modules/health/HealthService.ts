@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { DataSource } from 'typeorm';
 import { ApplicationComponents } from '../../core/di/application-components';
 import { IHealthService } from '../../types/common/health-service.interface';
-import { HealthStatus } from '../../types/common/health-status';
+import { HealthStatus } from './dto/health-status';
 
 @injectable()
 export class HealthService implements IHealthService {

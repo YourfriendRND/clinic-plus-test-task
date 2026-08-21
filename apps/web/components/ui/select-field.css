@@ -1,4 +1,5 @@
 .select-field {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -11,8 +12,12 @@
 }
 
 .select-field__control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
   height: 40px;
-  padding: 0 12px;
+  padding: 0 36px 0 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -20,14 +25,57 @@
   font: inherit;
   font-size: 14px;
   line-height: 20px;
+  text-align: left;
+  cursor: pointer;
   outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236B6B6B' d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
 }
 
-.select-field__control:focus {
+.select-field__control:focus,
+.select-field__control--open {
   border-color: var(--accent);
 }
 
 .select-field__control:disabled {
   color: var(--muted);
+  background-color: #f3f3f1;
+  cursor: not-allowed;
+}
+
+.select-field__list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+}
+
+.select-field__option {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.select-field__option:hover,
+.select-field__option--active {
   background: #f3f3f1;
 }

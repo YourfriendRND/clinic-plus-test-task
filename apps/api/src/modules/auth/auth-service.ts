@@ -5,23 +5,28 @@ import { ApplicationComponents } from '../../core/di/application-components';
 import { isProduction } from '../../core/config/env';
 import type { AppRedisClient } from '../../types/common/redis';
 import type { IAuthService } from '../../types/session/auth-service.interface';
-import type { LoginResult, TwoFaPayload } from '../../types/session/auth';
-import type { SessionUser } from '../../types/session/session-user';
+import type { LoginResult } from './dto/login';
+import type { SessionUser } from './dto/session-user';
 import type { IUserRepository } from '../../types/user/user-repository.interface';
 import { AuthError } from './auth-error';
 
 const TWO_FA_TTL_SECONDS = 300;
 
+type TwoFaPayload = {
+  userId: string;
+  code: string;
+};
+
 @injectable()
 export class AuthService implements IAuthService {
   public constructor(
-    @inject(ApplicationComponents.UserRepository) private readonly users: IUserRepository,
+    @inject(ApplicationComponents.UserRepository) private readonly userRepository: IUserRepository,
     @inject(ApplicationComponents.Redis) private readonly redis: AppRedisClient,
   ) {}
 
   public async login(phone: string, password: string): Promise<LoginResult> {
     const normalizedPhone = phone.replace(/\D/g, '');
-    const user = await this.users.findByPhone(normalizedPhone);
+    const user = await this.userRepository.findByPhone(normalizedPhone);
     const passwordOk = user ? await bcrypt.compare(password, user.password) : false;
 
     if (!user || !passwordOk) {
@@ -54,7 +59,7 @@ export class AuthService implements IAuthService {
       throw new AuthError('Неверный или истёкший код');
     }
 
-    const user = await this.users.findById(payload.userId);
+    const user = await this.userRepository.findById(payload.userId);
 
     if (!user) {
       throw new AuthError('Неверный или истёкший код');

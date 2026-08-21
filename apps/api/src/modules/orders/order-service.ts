@@ -1,25 +1,39 @@
 import { inject, injectable } from 'inversify';
 import { ApplicationComponents } from '../../core/di/application-components';
-import type { CreateOrderDto } from '../../types/order/create-order';
+import { RoleCode } from '../auth/role-code.enum';
+import type { AssignOrderDto } from './dto/assign-order';
+import type { ChangeOrderStatusDto } from './dto/change-order-status';
+import type { CreateOrderDto } from './dto/create-order';
+import type { OrderView } from './dto/order-view';
+import type { UpdateOrderDto } from './dto/update-order';
 import type { IOrderRepository } from '../../types/order/order-repository.interface';
 import type { IOrderService } from '../../types/order/order-service.interface';
-import type { OrderView } from '../../types/order/order-view';
-import type { UpdateOrderDto } from '../../types/order/update-order';
-import type { SessionUser } from '../../types/session/session-user';
+import type { IUserService } from '../../types/user/user-service.interface';
+import type { SessionUser } from '../auth/dto/session-user';
 import { Order } from './entities/order';
 import { OrderError } from './order-error';
 import { OrderStatus } from './order-status.enum';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
+const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
+  [OrderStatus.New]: OrderStatus.InProgress,
+  [OrderStatus.InProgress]: OrderStatus.Done,
+};
+
+function isOrderStatus(value: unknown): value is OrderStatus {
+  return Object.values(OrderStatus).some((status) => status === value);
+}
+
 @injectable()
 export class OrderService implements IOrderService {
   public constructor(
-    @inject(ApplicationComponents.OrderRepository) private readonly orders: IOrderRepository,
+    @inject(ApplicationComponents.OrderRepository) private readonly orderRepository: IOrderRepository,
+    @inject(ApplicationComponents.UserService) private readonly userService: IUserService,
   ) {}
 
   public async list(_user: SessionUser): Promise<OrderView[]> {
-    const items = await this.orders.findAll();
+    const items = await this.orderRepository.findAll();
     return items.map((order) => this.toView(order));
   }
 
@@ -28,8 +42,8 @@ export class OrderService implements IOrderService {
     const executionDate = this.requireDate(dto.executionDate);
     const description = this.requireText(dto.description, 'Укажите описание');
 
-    const saved = await this.orders.save(
-      this.orders.create({
+    const saved = await this.orderRepository.save(
+      this.orderRepository.create({
         address,
         executionDate,
         description,
@@ -42,11 +56,7 @@ export class OrderService implements IOrderService {
   }
 
   public async update(id: string, dto: UpdateOrderDto): Promise<OrderView> {
-    const order = await this.orders.findById(id);
-
-    if (!order) {
-      throw new OrderError('Наряд не найден', 404);
-    }
+    const order = await this.requireOrder(id);
 
     if (dto.address === undefined && dto.executionDate === undefined && dto.description === undefined) {
       throw new OrderError('Укажите адрес, дату или описание');
@@ -64,7 +74,60 @@ export class OrderService implements IOrderService {
       order.description = this.requireText(dto.description, 'Укажите описание');
     }
 
-    return this.toView(await this.orders.save(order));
+    return this.toView(await this.orderRepository.save(order));
+  }
+
+  public async assign(id: string, dto: AssignOrderDto): Promise<OrderView> {
+    const order = await this.requireOrder(id);
+    const executorId = dto?.executorId?.trim() ?? '';
+
+    if (!executorId) {
+      throw new OrderError('Укажите исполнителя');
+    }
+
+    const executor = await this.userService.findById(executorId);
+
+    if (!executor) {
+      throw new OrderError('Пользователь не найден', 404);
+    }
+
+    if (executor.role.code !== RoleCode.Team) {
+      throw new OrderError('Можно назначить только на бригаду');
+    }
+
+    order.executor = executor;
+    return this.toView(await this.orderRepository.save(order));
+  }
+
+  public async changeStatus(id: string, dto: ChangeOrderStatusDto, user: SessionUser): Promise<OrderView> {
+    const order = await this.requireOrder(id);
+
+    if (!order.executor || order.executor.id !== user.id) {
+      throw new OrderError('Наряд не назначен вашей бригаде', 403);
+    }
+
+    const requested = dto?.status;
+
+    if (!isOrderStatus(requested)) {
+      throw new OrderError('Укажите статус in_progress или done');
+    }
+
+    if (NEXT_STATUS[order.status] !== requested) {
+      throw new OrderError('Статус меняется только new => in_progress => done');
+    }
+
+    order.status = requested;
+    return this.toView(await this.orderRepository.save(order));
+  }
+
+  private async requireOrder(id: string): Promise<Order> {
+    const order = await this.orderRepository.findById(id);
+
+    if (!order) {
+      throw new OrderError('Наряд не найден', 404);
+    }
+
+    return order;
   }
 
   private requireText(value: string | undefined, message: string): string {

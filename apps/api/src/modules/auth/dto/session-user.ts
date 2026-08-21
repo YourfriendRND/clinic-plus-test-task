@@ -1,4 +1,4 @@
-import type { RoleCode } from '../../modules/auth/role-code.enum';
+import type { RoleCode } from '../role-code.enum';
 
 export type SessionUser = {
   id: string;

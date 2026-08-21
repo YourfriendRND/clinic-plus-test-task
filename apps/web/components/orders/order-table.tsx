@@ -3,12 +3,18 @@ import type { Order } from '../../lib/order';
 import { StatusBadge } from '../ui/badge';
 import './order-table.css';
 
-type OrderTableProps = {
-  orders: Order[];
-  onEdit?: (order: Order) => void;
+export type OrderRowAction = {
+  label: string;
+  disabled?: boolean;
+  onClick: () => void;
 };
 
-export function OrderTable({ orders, onEdit }: OrderTableProps) {
+type OrderTableProps = {
+  orders: Order[];
+  renderAction?: (order: Order) => OrderRowAction | null;
+};
+
+export function OrderTable({ orders, renderAction }: OrderTableProps) {
   return (
     <table className="order-table">
       <thead>
@@ -18,30 +24,41 @@ export function OrderTable({ orders, onEdit }: OrderTableProps) {
           <th className="order-table__head">Исполнитель</th>
           <th className="order-table__head">Статус</th>
           <th className="order-table__head">Описание</th>
-          {onEdit ? <th className="order-table__head">Действие</th> : null}
+          {renderAction ? <th className="order-table__head">Действие</th> : null}
         </tr>
       </thead>
       <tbody>
-        {orders.map((order) => (
-          <tr key={order.id} className="order-table__row">
-            <td className="order-table__cell">{order.address}</td>
-            <td className="order-table__cell">{formatDate(order.executionDate)}</td>
-            <td className={`order-table__cell${order.executor ? '' : ' order-table__cell--muted'}`}>
-              {order.executor?.fullName ?? 'Не назначен'}
-            </td>
-            <td className="order-table__cell">
-              <StatusBadge status={order.status} />
-            </td>
-            <td className="order-table__cell order-table__cell--ellipsis">{order.description}</td>
-            {onEdit ? (
-              <td className="order-table__cell">
-                <button type="button" className="order-table__action" onClick={() => onEdit(order)}>
-                  Изменить
-                </button>
+        {orders.map((order) => {
+          const action = renderAction?.(order) ?? null;
+
+          return (
+            <tr key={order.id} className="order-table__row">
+              <td className="order-table__cell">{order.address}</td>
+              <td className="order-table__cell">{formatDate(order.executionDate)}</td>
+              <td className={`order-table__cell${order.executor ? '' : ' order-table__cell--muted'}`}>
+                {order.executor?.fullName ?? 'Не назначен'}
               </td>
-            ) : null}
-          </tr>
-        ))}
+              <td className="order-table__cell">
+                <StatusBadge status={order.status} />
+              </td>
+              <td className="order-table__cell order-table__cell--ellipsis">{order.description}</td>
+              {renderAction ? (
+                <td className="order-table__cell">
+                  {action ? (
+                    <button
+                      type="button"
+                      className="order-table__action"
+                      disabled={action.disabled}
+                      onClick={action.onClick}
+                    >
+                      {action.label}
+                    </button>
+                  ) : null}
+                </td>
+              ) : null}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

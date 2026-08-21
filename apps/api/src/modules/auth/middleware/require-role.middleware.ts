@@ -27,3 +27,4 @@ export function requireRole(...allowed: RoleCode[]) {
 }
 
 export const RequireOperatorMiddleware = requireRole(RoleCode.Operator);
+export const RequireTeamMiddleware = requireRole(RoleCode.Team);
