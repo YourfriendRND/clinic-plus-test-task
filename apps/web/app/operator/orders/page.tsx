@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { OrderModal, type OrderFormValues } from '../../../components/orders/order-modal';
 import { OrderTable } from '../../../components/orders/order-table';
+import { OrdersUpdatedMark } from '../../../components/orders/orders-updated-mark';
 import { Button } from '../../../components/ui/button';
 import { useAssignOrder, useCreateOrder, useOrders, useUpdateOrder } from '../../../hooks/use-orders';
+import { useOrdersUpdatedMark } from '../../../hooks/use-orders-updated-mark';
 import { useTeams } from '../../../hooks/use-teams';
 import { ApiError } from '../../../lib/api-error';
 import type { Order } from '../../../lib/order';
@@ -16,19 +18,14 @@ export default function OperatorOrdersPage() {
   const createOrder = useCreateOrder();
   const updateOrder = useUpdateOrder();
   const assignOrder = useAssignOrder();
+  const updatedMark = useOrdersUpdatedMark(() => true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Order | null>(null);
   const [error, setError] = useState('');
-  const [updated, setUpdated] = useState(false);
 
   const pending = createOrder.isPending || updateOrder.isPending || assignOrder.isPending;
   const orders = ordersQuery.data ?? [];
   const teams = teamsQuery.data ?? [];
-
-  function flashUpdated() {
-    setUpdated(true);
-    window.setTimeout(() => setUpdated(false), 2000);
-  }
 
   function openCreate() {
     setEditing(null);
@@ -69,7 +66,6 @@ export default function OperatorOrdersPage() {
       }
 
       setModalOpen(false);
-      flashUpdated();
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : 'Не удалось сохранить наряд');
     }
@@ -80,7 +76,11 @@ export default function OperatorOrdersPage() {
       <div className="orders-page__toolbar">
         <div className="orders-page__heading">
           <h1 className="orders-page__title">Наряды</h1>
-          {updated ? <span className="orders-page__updated">Обновлено</span> : null}
+          <OrdersUpdatedMark
+            token={updatedMark.token}
+            visible={updatedMark.visible}
+            onHide={updatedMark.hide}
+          />
         </div>
         <Button onClick={openCreate}>Создать наряд</Button>
       </div>

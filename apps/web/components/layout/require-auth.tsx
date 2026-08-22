@@ -5,6 +5,7 @@ import { useEffect, type ReactNode } from 'react';
 import { useSession } from '../../hooks/use-session';
 import { homePath } from '../../lib/role';
 import type { SessionUser } from '../../lib/session-user';
+import { OrderLiveProvider } from '../orders/order-live-provider';
 import { AppHeader } from './app-header';
 import './require-auth.css';
 
@@ -41,9 +42,11 @@ export function RequireAuth({ role, children }: RequireAuthProps) {
   }
 
   return (
-    <div className="cabinet">
-      <AppHeader user={session.data} />
-      <div className="cabinet__body">{children}</div>
-    </div>
+    <OrderLiveProvider user={session.data}>
+      <div className="office">
+        <AppHeader user={session.data} />
+        <div className="office__body">{children}</div>
+      </div>
+    </OrderLiveProvider>
   );
 }

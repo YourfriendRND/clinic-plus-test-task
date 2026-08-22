@@ -54,8 +54,19 @@ console.log(`[web] rewrites → ${apiOrigin} (from ${path.join(repoRoot, '.env')
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  env: {
+    NEXT_PUBLIC_API_ORIGIN: apiOrigin,
+  },
   async rewrites() {
     return [
+      {
+        source: '/socket.io',
+        destination: `${apiOrigin}/socket.io`,
+      },
+      {
+        source: '/socket.io/:path*',
+        destination: `${apiOrigin}/socket.io/:path*`,
+      },
       {
         source: '/api/docs',
         destination: `${apiOrigin}/docs`,

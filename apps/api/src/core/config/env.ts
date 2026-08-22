@@ -23,6 +23,10 @@ export function getRedisUrl(): string {
   return process.env.REDIS_URL ?? 'redis://localhost:6379';
 }
 
+export function getRabbitMqUrl(): string {
+  return process.env.RABBITMQ_URL ?? 'amqp://clinic:clinic@localhost:5672';
+}
+
 export function getSessionSecret(): string {
   return process.env.SESSION_SECRET ?? 'dev-session-secret';
 }

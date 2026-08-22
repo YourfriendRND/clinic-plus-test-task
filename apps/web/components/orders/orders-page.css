@@ -25,9 +25,29 @@
 }
 
 .orders-page__updated {
-  color: var(--muted);
+  color: var(--accent);
   font-size: 12px;
+  font-weight: 600;
   line-height: 16px;
+  letter-spacing: 0.02em;
+  animation: orders-page-updated 2.4s ease forwards;
+}
+
+@keyframes orders-page-updated {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+
+  14%,
+  72% {
+    opacity: 1;
+    transform: none;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 .orders-page__panel {

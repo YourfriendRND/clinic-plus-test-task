@@ -1,6 +1,8 @@
 export const ApplicationComponents = {
   DataSource: Symbol.for('DataSource'),
   Redis: Symbol.for('Redis'),
+  EventBus: Symbol.for('EventBus'),
+  NotificationGateway: Symbol.for('NotificationGateway'),
   HealthService: Symbol.for('HealthService'),
   HealthController: Symbol.for('HealthController'),
   UserRepository: Symbol.for('UserRepository'),
