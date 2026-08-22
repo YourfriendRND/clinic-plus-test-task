@@ -1,11 +1,13 @@
 import { inject, injectable } from 'inversify';
 import { ApplicationComponents } from '../../core/di/application-components';
+import { DomainEvent } from '../../core/rabbitmq/domain-event.enum';
 import { RoleCode } from '../auth/role-code.enum';
 import type { AssignOrderDto } from './dto/assign-order';
 import type { ChangeOrderStatusDto } from './dto/change-order-status';
 import type { CreateOrderDto } from './dto/create-order';
 import type { OrderView } from './dto/order-view';
 import type { UpdateOrderDto } from './dto/update-order';
+import type { IEventBus } from '../../types/common/event-bus.interface';
 import type { IOrderRepository } from '../../types/order/order-repository.interface';
 import type { IOrderService } from '../../types/order/order-service.interface';
 import type { IUserService } from '../../types/user/user-service.interface';
@@ -30,6 +32,7 @@ export class OrderService implements IOrderService {
   public constructor(
     @inject(ApplicationComponents.OrderRepository) private readonly orderRepository: IOrderRepository,
     @inject(ApplicationComponents.UserService) private readonly userService: IUserService,
+    @inject(ApplicationComponents.EventBus) private readonly eventBus: IEventBus,
   ) {}
 
   public async list(_user: SessionUser): Promise<OrderView[]> {
@@ -52,7 +55,9 @@ export class OrderService implements IOrderService {
       }),
     );
 
-    return this.toView(saved);
+    const view = this.toView(saved);
+    await this.eventBus.publish(DomainEvent.OrderCreated, view);
+    return view;
   }
 
   public async update(id: string, dto: UpdateOrderDto): Promise<OrderView> {
@@ -74,7 +79,9 @@ export class OrderService implements IOrderService {
       order.description = this.requireText(dto.description, 'Укажите описание');
     }
 
-    return this.toView(await this.orderRepository.save(order));
+    const view = this.toView(await this.orderRepository.save(order));
+    await this.eventBus.publish(DomainEvent.OrderUpdated, view);
+    return view;
   }
 
   public async assign(id: string, dto: AssignOrderDto): Promise<OrderView> {
@@ -96,7 +103,9 @@ export class OrderService implements IOrderService {
     }
 
     order.executor = executor;
-    return this.toView(await this.orderRepository.save(order));
+    const view = this.toView(await this.orderRepository.save(order));
+    await this.eventBus.publish(DomainEvent.OrderAssigned, view);
+    return view;
   }
 
   public async changeStatus(id: string, dto: ChangeOrderStatusDto, user: SessionUser): Promise<OrderView> {
@@ -117,7 +126,9 @@ export class OrderService implements IOrderService {
     }
 
     order.status = requested;
-    return this.toView(await this.orderRepository.save(order));
+    const view = this.toView(await this.orderRepository.save(order));
+    await this.eventBus.publish(DomainEvent.OrderStatusChanged, view);
+    return view;
   }
 
   private async requireOrder(id: string): Promise<Order> {
