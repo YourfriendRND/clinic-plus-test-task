@@ -25,14 +25,7 @@ export class HealthController extends AbstractController {
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               properties:
-   *                 status:
-   *                   type: string
-   *                   example: ok
-   *                 database:
-   *                   type: string
-   *                   example: up
+   *               $ref: '#/components/schemas/HealthStatus'
    */
   @httpGet('/')
   public async getHealth() {

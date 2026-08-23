@@ -1,6 +1,6 @@
 import session from 'express-session';
 import { RedisStore } from 'connect-redis';
-import { getSessionSecret, isProduction } from '../config/env';
+import { getSessionSecret, isCookieSecure } from '../config/env';
 import type { AppRedisClient } from '../../types/common/redis';
 
 export function createSessionMiddleware(redis: AppRedisClient) {
@@ -13,7 +13,7 @@ export function createSessionMiddleware(redis: AppRedisClient) {
     cookie: {
       httpOnly: true,
       sameSite: 'lax',
-      secure: isProduction(),
+      secure: isCookieSecure(),
     },
   });
 }

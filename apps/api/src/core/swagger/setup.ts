@@ -1,5 +1,6 @@
 import path from 'node:path';
-import type { Express } from 'express';
+import type { Application } from 'express';
+import { swaggerSchemas } from './schemas';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
@@ -7,7 +8,7 @@ function posixGlob(...segments: string[]): string {
   return path.join(__dirname, ...segments).replaceAll('\\', '/');
 }
 
-export function setupSwagger(app: Express): void {
+export function setupSwagger(app: Application): void {
   const spec = swaggerJsdoc({
     definition: {
       openapi: '3.0.3',
@@ -30,6 +31,7 @@ export function setupSwagger(app: Express): void {
             name: 'connect.sid',
           },
         },
+        schemas: swaggerSchemas,
       },
     },
     apis: [posixGlob('../../modules/**/*.ts'), posixGlob('../../modules/**/*.js')],

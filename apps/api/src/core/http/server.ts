@@ -11,6 +11,7 @@ export function createHttpServer(container: Container) {
   const server = new InversifyExpressServer(container);
 
   server.setConfig((app) => {
+    app.set('trust proxy', 1);
     app.use(express.json());
     app.use(createSessionMiddleware(redis));
     setupSwagger(app);

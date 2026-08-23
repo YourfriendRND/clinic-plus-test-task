@@ -30,6 +30,12 @@ export class OrderController extends AbstractController {
    *     responses:
    *       200:
    *         description: Список нарядов
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/Order'
    *       401:
    *         description: Нет сессии
    */
@@ -56,22 +62,21 @@ export class OrderController extends AbstractController {
    *       content:
    *         application/json:
    *           schema:
-   *             type: object
-   *             required: [address, executionDate, description]
-   *             properties:
-   *               address:
-   *                 type: string
-   *                 example: ул. Ленина, 10
-   *               executionDate:
-   *                 type: string
-   *                 format: date
-   *                 example: "2026-08-21"
-   *               description:
-   *                 type: string
-   *                 example: Подключение оборудования
+   *             $ref: '#/components/schemas/CreateOrderRequest'
    *     responses:
    *       201:
-   *         description: Наряд создан
+   *         description: Наряд создан. Статус new, исполнитель null.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Order'
+   *             example:
+   *               id: 44444444-4444-4444-8444-444444444444
+   *               address: ул. Ленина, 10
+   *               executionDate: '2026-08-21'
+   *               description: Подключение оборудования
+   *               status: new
+   *               executor: null
    *       400:
    *         description: Невалидные поля
    *       401:
@@ -109,18 +114,14 @@ export class OrderController extends AbstractController {
    *       content:
    *         application/json:
    *           schema:
-   *             type: object
-   *             properties:
-   *               address:
-   *                 type: string
-   *               executionDate:
-   *                 type: string
-   *                 format: date
-   *               description:
-   *                 type: string
+   *             $ref: '#/components/schemas/UpdateOrderRequest'
    *     responses:
    *       200:
    *         description: Наряд обновлён
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Order'
    *       400:
    *         description: Невалидные поля
    *       401:
@@ -166,15 +167,14 @@ export class OrderController extends AbstractController {
    *       content:
    *         application/json:
    *           schema:
-   *             type: object
-   *             required: [executorId]
-   *             properties:
-   *               executorId:
-   *                 type: string
-   *                 format: uuid
+   *             $ref: '#/components/schemas/AssignOrderRequest'
    *     responses:
    *       200:
    *         description: Исполнитель назначен
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Order'
    *       400:
    *         description: Не бригада или нет executorId
    *       401:
@@ -220,15 +220,14 @@ export class OrderController extends AbstractController {
    *       content:
    *         application/json:
    *           schema:
-   *             type: object
-   *             required: [status]
-   *             properties:
-   *               status:
-   *                 type: string
-   *                 enum: [in_progress, done]
+   *             $ref: '#/components/schemas/ChangeOrderStatusRequest'
    *     responses:
    *       200:
    *         description: Статус обновлён
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Order'
    *       400:
    *         description: Недопустимый переход статуса
    *       401:
