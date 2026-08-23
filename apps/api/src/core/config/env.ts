@@ -34,3 +34,7 @@ export function getSessionSecret(): string {
 export function isProduction(): boolean {
   return process.env.NODE_ENV === 'production';
 }
+
+export function isCookieSecure(): boolean {
+  return process.env.COOKIE_SECURE === 'true';
+}

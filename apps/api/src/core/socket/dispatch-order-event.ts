@@ -8,7 +8,10 @@ export function dispatchOrderEvent(
   payload: unknown,
 ): string[] {
   const rooms = [OPERATORS_ROOM];
-  const isListSync = event === DomainEvent.OrderCreated || event === DomainEvent.OrderAssigned;
+  const isListSync =
+    event === DomainEvent.OrderCreated ||
+    event === DomainEvent.OrderAssigned ||
+    event === DomainEvent.OrderUpdated;
 
   if (isListSync) {
     rooms.push(TEAMS_ROOM);

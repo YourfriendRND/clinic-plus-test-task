@@ -49,14 +49,16 @@ loadRootEnv(repoRoot);
 
 const apiPort = process.env.API_PORT ?? '3001';
 const apiOrigin = process.env.API_ORIGIN ?? `http://localhost:${apiPort}`;
+const browserApiOrigin =
+  process.env.NEXT_PUBLIC_API_ORIGIN ?? (process.env.NODE_ENV === 'production' ? undefined : apiOrigin);
 
 console.log(`[web] rewrites → ${apiOrigin} (from ${path.join(repoRoot, '.env')})`);
 
 const nextConfig: NextConfig = {
   agentRules: false,
-  env: {
-    NEXT_PUBLIC_API_ORIGIN: apiOrigin,
-  },
+  output: 'standalone',
+  outputFileTracingRoot: repoRoot,
+  env: browserApiOrigin ? { NEXT_PUBLIC_API_ORIGIN: browserApiOrigin } : {},
   async rewrites() {
     return [
       {

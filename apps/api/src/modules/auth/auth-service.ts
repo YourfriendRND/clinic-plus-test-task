@@ -2,7 +2,6 @@ import { randomUUID } from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { inject, injectable } from 'inversify';
 import { ApplicationComponents } from '../../core/di/application-components';
-import { isProduction } from '../../core/config/env';
 import type { AppRedisClient } from '../../types/common/redis';
 import type { IAuthService } from '../../types/session/auth-service.interface';
 import type { LoginResult } from './dto/login';
@@ -38,10 +37,7 @@ export class AuthService implements IAuthService {
     const payload: TwoFaPayload = { userId: user.id, code };
 
     await this.redis.setEx(`2fa:${verificationId}`, TWO_FA_TTL_SECONDS, JSON.stringify(payload));
-
-    if (!isProduction()) {
-      console.log(`2FA code for ${normalizedPhone}: ${code}`);
-    }
+    console.log(`2FA code for ${normalizedPhone}: ${code}`);
 
     return { verificationId };
   }

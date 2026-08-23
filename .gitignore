@@ -1,13 +1,8 @@
-# Local planning (not for reviewers)
-plan.md
-figma-prompt.md
-screenshot/
-
 # Dependencies
 node_modules/
 
 # Env and secrets
-.env
+*.env
 .env.local
 .env.*.local
 

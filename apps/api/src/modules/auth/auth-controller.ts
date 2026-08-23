@@ -26,26 +26,14 @@ export class AuthController extends AbstractController {
    *       content:
    *         application/json:
    *           schema:
-   *             type: object
-   *             required: [phone, password]
-   *             properties:
-   *               phone:
-   *                 type: string
-   *                 example: "79001111111"
-   *               password:
-   *                 type: string
-   *                 example: password
+   *             $ref: '#/components/schemas/LoginRequest'
    *     responses:
    *       200:
    *         description: Нужен код 2FA (в dev смотрите лог API)
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               required: [verificationId]
-   *               properties:
-   *                 verificationId:
-   *                   type: string
+   *               $ref: '#/components/schemas/LoginResponse'
    *       401:
    *         description: Неверный телефон или пароль
    */
@@ -76,17 +64,14 @@ export class AuthController extends AbstractController {
    *       content:
    *         application/json:
    *           schema:
-   *             type: object
-   *             required: [verificationId, code]
-   *             properties:
-   *               verificationId:
-   *                 type: string
-   *               code:
-   *                 type: string
-   *                 example: "123456"
+   *             $ref: '#/components/schemas/VerifyRequest'
    *     responses:
    *       200:
    *         description: Сессия создана
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/SessionUser'
    *       401:
    *         description: Неверный или истёкший код
    */
@@ -172,6 +157,10 @@ export class AuthController extends AbstractController {
    *     responses:
    *       200:
    *         description: Профиль из сессии
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/SessionUser'
    *       401:
    *         description: Нет сессии
    */

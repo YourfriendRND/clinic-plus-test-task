@@ -26,6 +26,12 @@ export class TeamController extends AbstractController {
    *     responses:
    *       200:
    *         description: Список бригад
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/Team'
    *       401:
    *         description: Нет сессии
    *       403:
